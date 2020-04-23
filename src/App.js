@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
 import MainTemplate from './templates/MainTemplate';
 import MainView from './views/MainView';
+import Input from './components/atoms/Input/Input';
 
 class App extends Component {
   state = {
-    result: 'Siema',
+    result: '',
+  };
+
+  handleChange = (e) => {
+    this.setState({ result: e.target.value });
   };
 
   render() {
@@ -13,8 +18,13 @@ class App extends Component {
     return (
       <MainTemplate>
         <MainView>
-          <h3>{result}</h3>
-          <p> siema siema</p>
+          <h1>Your URL:</h1>
+          <h3>Wynik to: {result}</h3>
+          <Input type="text" value={result} onChange={this.handleChange} />
+          <Input />
+          <Input />
+          <Input />
+          <Input />
         </MainView>
       </MainTemplate>
     );
