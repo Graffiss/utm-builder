@@ -112,9 +112,12 @@ class App extends Component {
       <MainTemplate>
         <MainView>
           <StyledResult>
+            <h2>Ze state.result:</h2>
+            {result}
+          </StyledResult>
+          <StyledResult>
             <h1>Your URL:</h1>
             <p>
-              {result}
               {website}
               {utmSource.length > 0 && `?utm_source=${utmSource}`}
               {utmMedium.length > 0 && `&utm_medium=${utmMedium}`}
@@ -122,7 +125,6 @@ class App extends Component {
               {utmTerm.length > 0 && `&utm_term=${utmTerm}`}
               {utmContent.length > 0 && `&utm_content=${utmContent}`}
             </p>
-
             {copied ? (
               <CopyButton success type="button">
                 COPIED!
@@ -143,6 +145,7 @@ class App extends Component {
           />
           <p>UTM_Source (Required):</p>
           <StyledSelect value={utmSource} onChange={this.handleChange} name="utmSource">
+            <option value={null} />
             <option value="paid">paid</option>
             <option value="email">email</option>
             <option value="affiliate">affiliate</option>
