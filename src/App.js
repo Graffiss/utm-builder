@@ -65,24 +65,43 @@ const CopyButton = styled.button`
   width: 200px;
   height: 40px;
   background: transparent;
-  border: 2px solid #e41e2a;
+  border: 2px solid #f24e4e;
   border-radius: 10px;
   font-size: 20px;
-  color: #e41e2a;
+  color: #f24e4e;
   outline: none;
   cursor: pointer;
 
   ${({ success }) =>
     success &&
     css`
-      background: #e41e2a;
+      background: #f24e4e;
       color: white;
     `}
 `;
 
+const ButtonsContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ResetButton = styled.button`
+  width: 80px;
+  height: 40px;
+  background: transparent;
+  border: 2px solid #3cab09;
+  border-radius: 10px;
+  font-size: 20px;
+  color: #3cab09;
+  outline: none;
+  cursor: pointer;
+  margin: 0 10px;
+`;
+
 class App extends Component {
   state = {
-    result: '',
+    result: [],
     website: '',
     utmSource: '',
     utmMedium: '',
@@ -94,6 +113,29 @@ class App extends Component {
 
   handleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
+    this.setState((prevState) => ({
+      result: [
+        prevState.website,
+        prevState.utmSource.length > 0 && `?utm_source=${prevState.utmSource}`,
+        prevState.utmMedium.length > 0 && `&utm_medium=${prevState.utmMedium}`,
+        prevState.utmCampaign.length > 0 && `&utm_campaign=${prevState.utmCampaign}`,
+        prevState.utmTerm.length > 0 && `&utm_term=${prevState.utmTerm}`,
+        prevState.utmContent.length > 0 && `&utm_content=${prevState.utmContent}`,
+      ],
+    }));
+  };
+
+  resetFields = () => {
+    this.setState({
+      result: [],
+      website: '',
+      utmSource: '',
+      utmMedium: '',
+      utmCampaign: '',
+      utmTerm: '',
+      utmContent: '',
+      copied: false,
+    });
   };
 
   render() {
@@ -113,7 +155,7 @@ class App extends Component {
         <MainView>
           <StyledResult>
             <h2>Ze state.result:</h2>
-            {result}
+            <p>{result}</p>
           </StyledResult>
           <StyledResult>
             <h1>Your URL:</h1>
@@ -125,15 +167,21 @@ class App extends Component {
               {utmTerm.length > 0 && `&utm_term=${utmTerm}`}
               {utmContent.length > 0 && `&utm_content=${utmContent}`}
             </p>
-            {copied ? (
-              <CopyButton success type="button">
-                COPIED!
-              </CopyButton>
-            ) : (
-              <CopyToClipboard text={result} onCopy={() => this.setState({ copied: true })}>
-                <CopyButton type="button">Copy to clipboard</CopyButton>
-              </CopyToClipboard>
-            )}
+            <ButtonsContainer>
+              {copied ? (
+                <CopyButton success type="button">
+                  COPIED!
+                </CopyButton>
+              ) : (
+                <CopyToClipboard
+                  text={result.filter((item) => item != false).join('')}
+                  onCopy={() => this.setState({ copied: true })}
+                >
+                  <CopyButton type="button">Copy to clipboard</CopyButton>
+                </CopyToClipboard>
+              )}
+              <ResetButton onClick={this.resetFields}>Reset</ResetButton>
+            </ButtonsContainer>
           </StyledResult>
           <p>Website (Required):</p>
           <StyledInput
@@ -153,6 +201,7 @@ class App extends Component {
           </StyledSelect>
           <p>UTM_Medium (Required):</p>
           <StyledSelect value={utmMedium} onChange={this.handleChange} name="utmMedium">
+            <option value={null} />
             <option value="facebook">facebook</option>
             <option value="google">google</option>
             <option value="newsletter">newsletter</option>
