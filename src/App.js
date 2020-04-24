@@ -103,7 +103,16 @@ class App extends Component {
   state = {
     result: [],
     website: '',
-    utmSource: '',
+    utmSource: [
+      {
+        id: 1,
+        utmSource: 'facebook',
+        utmMedium: ['social', 'cpc'],
+      },
+      { id: 2, utmSource: 'google', utmMedium: ['organic', 'cpc', 'google_play'] },
+      { id: 3, utmSource: 'youtube', utmMedium: ['cpv', 'cpc'] },
+      { id: 4, utmSource: 'referral', utmMedium: ['article', 'texlink'] },
+    ],
     utmMedium: '',
     utmCampaign: '',
     utmTerm: '',
@@ -154,19 +163,8 @@ class App extends Component {
       <MainTemplate>
         <MainView>
           <StyledResult>
-            <h2>Ze state.result:</h2>
-            <p>{result}</p>
-          </StyledResult>
-          <StyledResult>
             <h1>Your URL:</h1>
-            <p>
-              {website}
-              {utmSource.length > 0 && `?utm_source=${utmSource}`}
-              {utmMedium.length > 0 && `&utm_medium=${utmMedium}`}
-              {utmCampaign.length > 0 && `&utm_campaign=${utmCampaign}`}
-              {utmTerm.length > 0 && `&utm_term=${utmTerm}`}
-              {utmContent.length > 0 && `&utm_content=${utmContent}`}
-            </p>
+            <p>{result}</p>
             <ButtonsContainer>
               {copied ? (
                 <CopyButton success type="button">
@@ -174,7 +172,7 @@ class App extends Component {
                 </CopyButton>
               ) : (
                 <CopyToClipboard
-                  text={result.filter((item) => item != false).join('')}
+                  text={result.filter((item) => item !== false).join('')}
                   onCopy={() => this.setState({ copied: true })}
                 >
                   <CopyButton type="button">Copy to clipboard</CopyButton>
@@ -193,15 +191,16 @@ class App extends Component {
           />
           <p>UTM_Source (Required):</p>
           <StyledSelect value={utmSource} onChange={this.handleChange} name="utmSource">
-            <option value={null} />
-            <option value="paid">paid</option>
-            <option value="email">email</option>
-            <option value="affiliate">affiliate</option>
-            <option value="social">social</option>
+            <option>{null}</option>
+            {utmSource.map((item) => (
+              <option key={item.id} value={item.utmSource}>
+                {item.utmSource}
+              </option>
+            ))}
           </StyledSelect>
           <p>UTM_Medium (Required):</p>
           <StyledSelect value={utmMedium} onChange={this.handleChange} name="utmMedium">
-            <option value={null} />
+            <option>{null}</option>
             <option value="facebook">facebook</option>
             <option value="google">google</option>
             <option value="newsletter">newsletter</option>
