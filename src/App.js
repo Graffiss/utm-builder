@@ -190,8 +190,7 @@ class App extends Component {
             placeholder="https://pl.xtb.com/oil-campaign"
           />
           <p>UTM_Source (Required):</p>
-          <StyledSelect value={utmSource} onChange={this.handleChange} name="utmSource">
-            <option>{null}</option>
+          <StyledSelect onChange={this.handleChange} name="utmSource">
             {utmSource.map((item) => (
               <option key={item.id} value={item.utmSource}>
                 {item.utmSource}
