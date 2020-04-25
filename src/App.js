@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import MainTemplate from './templates/MainTemplate';
 import MainView from './views/MainView';
+import sourceMediumData from './data/sourceMediumData';
 
 const StyledResult = styled.div`
   display: flex;
@@ -65,17 +66,17 @@ const CopyButton = styled.button`
   width: 200px;
   height: 40px;
   background: transparent;
-  border: 2px solid #f24e4e;
+  border: 2px solid #3cab09;
   border-radius: 10px;
-  font-size: 20px;
-  color: #f24e4e;
+  font-size: 18px;
+  color: #3cab09;
   outline: none;
   cursor: pointer;
 
   ${({ success }) =>
     success &&
     css`
-      background: #f24e4e;
+      background: #3cab09;
       color: white;
     `}
 `;
@@ -87,32 +88,23 @@ const ButtonsContainer = styled.div`
 `;
 
 const ResetButton = styled.button`
-  width: 80px;
+  width: 100px;
   height: 40px;
   background: transparent;
-  border: 2px solid #3cab09;
+  border: 2px solid #f24e4e;
   border-radius: 10px;
-  font-size: 20px;
-  color: #3cab09;
+  font-size: 18px;
+  color: #f24e4e;
   outline: none;
   cursor: pointer;
-  margin: 0 10px;
+  margin-left: 10px;
 `;
 
 class App extends Component {
   state = {
     result: [],
     website: '',
-    utmSource: [
-      {
-        id: 1,
-        utmSource: 'facebook',
-        utmMedium: ['social', 'cpc'],
-      },
-      { id: 2, utmSource: 'google', utmMedium: ['organic', 'cpc', 'google_play'] },
-      { id: 3, utmSource: 'youtube', utmMedium: ['cpv', 'cpc'] },
-      { id: 4, utmSource: 'referral', utmMedium: ['article', 'texlink'] },
-    ],
+    utmSource: '',
     utmMedium: '',
     utmCampaign: '',
     utmTerm: '',
@@ -134,7 +126,7 @@ class App extends Component {
     }));
   };
 
-  resetFields = () => {
+  resetAll = () => {
     this.setState({
       result: [],
       website: '',
@@ -143,6 +135,13 @@ class App extends Component {
       utmCampaign: '',
       utmTerm: '',
       utmContent: '',
+      copied: false,
+    });
+  };
+
+  resetURL = () => {
+    this.setState({
+      result: [],
       copied: false,
     });
   };
@@ -158,6 +157,7 @@ class App extends Component {
       utmContent,
       copied,
     } = this.state;
+    const options = sourceMediumData[utmSource] || [];
 
     return (
       <MainTemplate>
@@ -178,7 +178,8 @@ class App extends Component {
                   <CopyButton type="button">Copy to clipboard</CopyButton>
                 </CopyToClipboard>
               )}
-              <ResetButton onClick={this.resetFields}>Reset</ResetButton>
+              <ResetButton onClick={this.resetURL}>Reset URL</ResetButton>
+              <ResetButton onClick={this.resetAll}>Reset All</ResetButton>
             </ButtonsContainer>
           </StyledResult>
           <p>Website (Required):</p>
@@ -191,19 +192,18 @@ class App extends Component {
           />
           <p>UTM_Source (Required):</p>
           <StyledSelect onChange={this.handleChange} name="utmSource">
-            {utmSource.map((item) => (
-              <option key={item.id} value={item.utmSource}>
-                {item.utmSource}
-              </option>
-            ))}
-          </StyledSelect>
-          <p>UTM_Medium (Required):</p>
-          <StyledSelect value={utmMedium} onChange={this.handleChange} name="utmMedium">
             <option>{null}</option>
             <option value="facebook">facebook</option>
             <option value="google">google</option>
-            <option value="newsletter">newsletter</option>
-            <option value="workflow">workflow</option>
+            <option value="youtube">youtube</option>
+          </StyledSelect>
+          <p>UTM_Medium (Required):</p>
+          <StyledSelect value={utmMedium} onChange={this.handleChange} name="utmMedium">
+            {options.map((item) => (
+              <option key={item.id} value={item.utmMedium}>
+                {item.utmMedium}
+              </option>
+            ))}
           </StyledSelect>
           <p>UTM_Campaign (Required):</p>
           <StyledInput
