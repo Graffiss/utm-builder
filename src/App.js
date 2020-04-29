@@ -193,12 +193,15 @@ class App extends Component {
           <p>UTM_Source (Required):</p>
           <StyledSelect onChange={this.handleChange} name="utmSource">
             <option>{null}</option>
-            <option value="facebook">facebook</option>
-            <option value="google">google</option>
-            <option value="youtube">youtube</option>
+            {Object.keys(sourceMediumData).map((item) => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
           </StyledSelect>
           <p>UTM_Medium (Required):</p>
           <StyledSelect value={utmMedium} onChange={this.handleChange} name="utmMedium">
+            <option>{null}</option>
             {options.map((item) => (
               <option key={item.id} value={item.utmMedium}>
                 {item.utmMedium}
